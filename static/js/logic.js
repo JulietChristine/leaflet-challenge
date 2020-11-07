@@ -89,10 +89,12 @@ function markerColor(mag) {
   function createMap(earthquakes) {
   
     // Define streetmap and darkmap layers
-    var satellite = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-      attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+    let satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',{
+      attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
+      tileSize: 512,
       maxZoom: 18,
-      id: "mapbox.satellite",
+      zoomOffset: -1,
+      id: "mapbox/satellite-v9",
       accessToken: API_KEY
     });
   
@@ -105,7 +107,7 @@ function markerColor(mag) {
       accessToken: API_KEY
     });
   
-    let outdors = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',{
+    let outdoors = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',{
       attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
       tileSize: 512,
       maxZoom: 18,
@@ -122,7 +124,7 @@ function markerColor(mag) {
     var baseMaps = {
       "Satellite Map": satellite,
       "Gray Scale Map": grayscale,
-      "Outdors Map": outdors
+      "Outdoors Map": outdoors
     };
   
   
