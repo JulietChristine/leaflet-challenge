@@ -18,13 +18,12 @@ function getColor(mag) {
     };
   }
   
-  
   // calling the API and d3
   let geoData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
   tectonicPlates = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
   
-  let plateBoundary = new L.LayerGroup();
+  let tplateBoundaries = new L.LayerGroup();
   
   d3.json(tectonicPlates, function (plates) {
      L.geoJSON(plates.features, {
@@ -34,9 +33,8 @@ function getColor(mag) {
                  color: 'Orange'
              }
          },
-     }).addTo(plateBoundary);
+     }).addTo(tplateBoundaries);
   })
-  
   
   d3.json(geoData, function(data) {
 
@@ -46,14 +44,7 @@ function getColor(mag) {
   
   function createFeatures(earthquakeData) {
   
-    function onEachFeature(feature, layer) {
-      layer.bindPopup("<h3>" + feature.properties.place +
-        "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
-    }
-  
-    let earthquakes = L.geoJSON(earthquakeData, {
-      onEachFeature: onEachFeature
-    });
+    let earthquakes = L.geoJSON(earthquakeData)
   
     var earthquakeMarkers = [];
   
@@ -61,10 +52,11 @@ function getColor(mag) {
 
       earthquakeMarkers.push(L.circle([earthquakeData[i].geometry.coordinates[1],earthquakeData[i].geometry.coordinates[0]], {
         fillOpacity: 0.65,
-        color: getColor(earthquakeData[i].properties.mag),
+        color: "black",
+        weight: 0.65,
         fillColor: getColor(earthquakeData[i].properties.mag),
-        radius: earthquakeData[i].properties.mag * 30000 
-      })
+        radius: earthquakeData[i].properties.mag * 32000 
+      }).bindPopup("<p><strong>" + "Location" + "</strong><br>" + earthquakeData[i].properties.place + "</br></p><hr><p><strong>" + "Magnitude" + "</strong><br>" + earthquakeData[i].properties.mag + "</br></p>")
       )
 
       var earthquakeLayer = L.layerGroup(earthquakeMarkers);
@@ -76,7 +68,7 @@ function getColor(mag) {
   
   function createMap(earthquakes) {
   
-    // Define streetmap and darkmap layers
+    // Map Layers
     let satellite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',{
       attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
       tileSize: 512,
@@ -114,14 +106,14 @@ function getColor(mag) {
     // Overlay Maps!
     let overlayMaps = {
       "Earthquakes": earthquakes,
-      "Plates Boundary": plateBoundary,
+      "Plates Boundary": tplateBoundaries,
     };
   
     // Let's make the map
     let myMap = L.map("map", {
       center: [37.09, -95.71],
-      zoom: 3,
-      layers: [satellite, earthquakes, plateBoundary]
+      zoom: 3.5,
+      layers: [satellite, earthquakes, tplateBoundaries]
     });
   
     L.control.layers(baseMaps, overlayMaps, {
