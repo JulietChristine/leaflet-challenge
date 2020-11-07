@@ -3,21 +3,15 @@
 
 // create a function that returns a color based on magnitude 
 function getColor(mag) {
-    if (mag <= 1) {
-        return "#ADFF2F";
-    } else if (mag <= 2) {
-        return "#9ACD32";
-    } else if (mag <= 3) {
-        return "#FFFF00";
-    } else if (mag <= 4) {
-        return "#FFD700";
-    } else if (mag <= 5) {
-        return "#FFA500";
-    } else {
-        return "#FF0000";
-    };
-  }
-  
+  return mag <= 1 ? "#ADFF2F" :
+         mag <= 2 ? "#9ACD32" :
+         mag <= 3 ? "#FFFF00" :
+         mag <= 4 ? "#FFD700" :
+         mag <= 5 ? "#FFA500" :
+                    "#FF0000" ;
+}
+
+
   // calling the API and d3
   let geoData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
@@ -119,6 +113,26 @@ function getColor(mag) {
     L.control.layers(baseMaps, overlayMaps, {
       collapsed: false
     }).addTo(myMap);
+
+    let legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function () {
+    
+        let div = L.DomUtil.create('div', 'info legend'),
+            mag = [0, 1, 2, 3, 4, 5],
+            labels = ['#ADFF2F', '#9ACD32', '#FFFF00', '#FFD700', '#FFA500', '#FF0000'];
+            
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (let i = 0; i < mag.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + labels[i] + '"></i> ' +
+                mag[i] + (mag[i + 1] ? '&ndash;' + mag[i + 1] + '<br>' : '+');
+        }
+    
+        return div;
+    }
+    
+    legend.addTo(myMap); 
 
   }
 
